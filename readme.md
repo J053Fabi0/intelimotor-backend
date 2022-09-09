@@ -1,6 +1,6 @@
 ## Cómo correr el código
 
-#### Hacer esto solo una vez
+### Hacer esto solo una vez
 
 Dentro del directorio donde se clonó el repositorio:
 
