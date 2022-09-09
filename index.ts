@@ -6,7 +6,7 @@ dotenv.config({ path: join(__dirname, "..", "/.env") });
 
 import cors from "cors";
 import express from "express";
-import { usingCors } from "./utils/constants";
+import { screenshotsDir, usingCors } from "./utils/constants";
 
 if (process.env.USERNAME === undefined) console.log("USERNAME not set in .env"), process.exit(0);
 if (process.env.PASSWORD === undefined) console.log("PASSWORD not set in .env"), process.exit(0);
@@ -41,3 +41,7 @@ app
   .on("error", (err: any) => process.env.NODE_ENV || console.log(err));
 
 export default app;
+
+// Create screenshot diretory if it doesn't exist
+import fs from "fs";
+if (!fs.existsSync(screenshotsDir)) fs.mkdirSync(screenshotsDir);

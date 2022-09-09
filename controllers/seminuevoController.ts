@@ -1,6 +1,8 @@
+import { join } from "path";
 import sleep from "../utils/sleep";
 import puppeteer, { Page } from "puppeteer";
 import handleError from "../utils/handleError";
+import { screenshotsDir } from "../utils/constants";
 import CommonResponse from "../types/commonResponse.type";
 import PostSeminuevo from "../types/api/seminuevo/postSeminuevo.type";
 
@@ -124,21 +126,20 @@ async function photographLatestPublication(page: Page) {
   await page.goto("https://www.seminuevos.com/my_vehicles/pending?dealer_id=0");
 
   // Get the vehicle's ID
-  const productID = await page.$eval(
-    "#main > div.row-fluid > div > div.search-results > ul > li:nth-child(2)",
-    (e) => e.id
-  );
+  const productID = (
+    await page.$eval("#main > div.row-fluid > div > div.search-results > ul > li:nth-child(2)", (e) => e.id)
+  ).substring(16);
 
   // Go to the vehicle's webpage
-  await page.goto(`https://www.seminuevos.com/myvehicle/${productID.substring(16)}`);
+  await page.goto(`https://www.seminuevos.com/myvehicle/${productID}`);
 
   await page.waitForSelector("#vehicle > div > div.loading-data.white.transition-opacity", { hidden: true });
 
   // Take the screenshot
   const ssName = Date.now().toString();
-  await page.screenshot({ path: `./screenshots/${ssName}.png` });
+  await page.screenshot({ path: join(screenshotsDir, `${ssName}.png`) });
 
-  return ssName;
+  return { ssName, productID };
 }
 
 export const postSeminuevo = async ({ body: { price, description } }: PostSeminuevo, res: CommonResponse) => {
@@ -150,12 +151,12 @@ export const postSeminuevo = async ({ body: { price, description } }: PostSeminu
 
     await login(page);
     await sellCar(page, price, description);
-    const ssName = await photographLatestPublication(page);
+    const { ssName, productID } = await photographLatestPublication(page);
 
-    // await browser.close();
+    await browser.close();
     res
       .status(200)
-      .send({ ssName: `${ssName}.png`, publicationURL: `https://www.seminuevos.com/myvehicle/${ssName}` });
+      .send({ ssName: `${ssName}.png`, publicationURL: `https://www.seminuevos.com/myvehicle/${productID}` });
   } catch (e) {
     handleError(res, e);
   }
