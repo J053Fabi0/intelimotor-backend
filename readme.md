@@ -8,7 +8,7 @@ Dentro del directorio donde se clonó el repositorio:
 1. `cp .env.temp .env` y editar `.env` con las credenciales necesarias para acceder al sitio
    <https://www.seminuevos.com>.
 
-Para correr el código a partir de ahora es con el comando `npm run start`.
+Para correr el código a partir de ahora se usa el comando `npm run start`.
 
 ## Hacer llamadas a la API
 
@@ -29,5 +29,4 @@ Para acceder a la screenshot que devuelve, se debe concatenar el valor de `ssNam
 `http://localhost:3026/screenshots/`, por ejemplo `http://localhost:3026/screenshots/1662687994748.png`.
 
 Como la publicación a veces puede tardar en aparecer en la base de datos de <https://seminuevos.com>, la captura de
-pantalla puede mostrar un 404, pero se le puede dar seguimiento a la publicación desde el otro dato que retorna
-`publicationURL`.
+pantalla puede mostrar un 404, pero se le puede dar seguimiento a la publicación desde `publicationURL`.
