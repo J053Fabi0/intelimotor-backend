@@ -149,20 +149,29 @@ export const postSeminuevo = async ({ body: { price, description } }: PostSeminu
     const browser = await puppeteer.launch({ headless: true, args: isRoot() ? ["--no-sandbox"] : undefined });
 
     const page = await browser.newPage();
+    page.setDefaultTimeout(5 * 1_000);
     page.setViewport({ width: 1300, height: 2000 });
 
+    // Login
     await repeatUntilNoError(...([() => login(page), 3, 0] as const), (e, i) =>
       console.log(`Error en login en el intento #${i}:`, e)
     );
+
+    // Publicar carro
     await repeatUntilNoError(...([() => sellCar(page, price, description), 3, 0] as const), (e, i) =>
       console.log(`Error en sellCar en el intento #${i}:`, e)
     );
+
+    // Tomar captura de pantalla
     const { ssName, productID } = await repeatUntilNoError(
       ...([() => photographLatestPublication(page), 3, 0] as const),
       (e, i) => console.log(`Error en photographLatestPublication en el intento #${i}:`, e)
     );
 
     await browser.close();
+
+    console.log("Listo");
+
     res
       .status(200)
       .send({ ssName: `${ssName}.png`, publicationURL: `https://www.seminuevos.com/myvehicle/${productID}` });
