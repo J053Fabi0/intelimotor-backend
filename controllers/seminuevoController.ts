@@ -149,7 +149,7 @@ export const postSeminuevo = async ({ body: { price, description } }: PostSeminu
     const browser = await puppeteer.launch({ headless: true, args: isRoot() ? ["--no-sandbox"] : undefined });
 
     const page = await browser.newPage();
-    page.setDefaultTimeout(5 * 1_000);
+    page.setDefaultTimeout(10 * 1_000);
     page.setViewport({ width: 1300, height: 2000 });
 
     // Login
