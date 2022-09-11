@@ -6,7 +6,7 @@ export default async function repeatUntilNoError<T>(
   awaitTimeBetweenRetries = 100,
   onCatch?: (error: unknown, i: number) => void
 ) {
-  let i = 0;
+  let i = 1;
   let error: unknown;
   if (maxRetries < 0) maxRetries = Infinity;
   let result: T | Promise<T> = undefined as unknown as T;
