@@ -153,16 +153,19 @@ export const postSeminuevo = async ({ body: { price, description } }: PostSeminu
     page.setViewport({ width: 1300, height: 2000 });
 
     // Login
+    console.log("Haciendo login");
     await repeatUntilNoError(...([() => login(page), 3, 0] as const), (e, i) =>
       console.log(`Error en login en el intento #${i}:`, e)
     );
 
     // Publicar carro
+    console.log("Publicando carro");
     await repeatUntilNoError(...([() => sellCar(page, price, description), 3, 0] as const), (e, i) =>
       console.log(`Error en sellCar en el intento #${i}:`, e)
     );
 
     // Tomar captura de pantalla
+    console.log("Tomando captura de pantalla");
     const { ssName, productID } = await repeatUntilNoError(
       ...([() => photographLatestPublication(page), 3, 0] as const),
       (e, i) => console.log(`Error en photographLatestPublication en el intento #${i}:`, e)
