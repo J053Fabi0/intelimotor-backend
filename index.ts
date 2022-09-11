@@ -1,4 +1,7 @@
 import { join } from "path";
+import isRoot from "./utils/isRoot";
+
+if (isRoot()) console.log("Warning: running as root.");
 
 import * as dotenv from "dotenv";
 dotenv.config();
