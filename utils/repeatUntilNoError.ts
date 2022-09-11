@@ -8,6 +8,7 @@ export default async function repeatUntilNoError<T>(
 ) {
   let i = 0;
   let error: unknown;
+  if (maxRetries < 0) maxRetries = Infinity;
   let result: T | Promise<T> = undefined as unknown as T;
 
   do {
@@ -19,14 +20,14 @@ export default async function repeatUntilNoError<T>(
       return result;
     } catch (e) {
       error = e;
-      onCatch?.(e, i);
+      if (i < maxRetries) onCatch?.(e, i);
       await sleep(awaitTimeBetweenRetries);
     } finally {
       i++;
     }
-  } while ((maxRetries < 0 ? -Infinity : i) <= maxRetries);
+  } while (i <= maxRetries);
 
-  if ((maxRetries < 0 ? -Infinity : i) <= maxRetries) throw error;
+  if (i <= maxRetries) throw error;
 
   return result;
 }

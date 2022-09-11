@@ -34,8 +34,9 @@ async function sellCar(page: Page, price: number, description: string) {
   }) {
     let n = 0;
     const reportarFalla = async (paso: string) => {
-      // console.log(`Intento #${++n} fallido. Paso: ${paso}. DropdownID: ${dropdownID}. Selector: "${selector}\n`);
-      await sleep(false ? 99999 : 10);
+      n++;
+      // console.log(`Intento #${n} fallido. Paso: ${paso}. DropdownID: ${dropdownID}. Selector: "${selector}\n`);
+      await sleep(10);
     };
 
     while (true) {
@@ -77,14 +78,16 @@ async function sellCar(page: Page, price: number, description: string) {
     { selector: selector(6), dropdownID: "provinces", dropdown: "nuevo" },
     { selector: selector(7), dropdownID: "cities", dropdown: "monterrey" },
   ];
-  while (true) {
+  const maxTries = 2;
+  for (let i = 1; i <= maxTries; i++) {
     for (const field of fields)
       try {
         await setField(field);
-      } catch (_) {
-        continue;
+      } catch (e) {
+        if (i === maxTries) throw e;
+        else continue; // No dejar que llegue al break, y volver a intentar desde el inicio.
       }
-    break;
+    break; // Si consigue realizar el for-of anterior, salir del for actual.
   }
 
   // El kilometraje
@@ -149,7 +152,7 @@ export const postSeminuevo = async ({ body: { price, description } }: PostSeminu
     const browser = await puppeteer.launch({ headless: true, args: isRoot() ? ["--no-sandbox"] : undefined });
 
     const page = await browser.newPage();
-    page.setDefaultTimeout(10 * 1_000);
+    page.setDefaultTimeout(10 * 1_000); // Un timeout de 10 segundos en todo.
     page.setViewport({ width: 1300, height: 2000 });
 
     // Login
