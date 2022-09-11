@@ -35,9 +35,9 @@ import router from "./routes/routes";
 app.use(router);
 
 import { address } from "ip";
-const port = 3026;
+const port = process.env.PORT || 3026;
 app
-  .listen(port, () => process.env.NODE_ENV === "test" || console.log(`Server on http://${address()}:${port}`))
+  .listen(+port, () => process.env.NODE_ENV === "test" || console.log(`Server on http://${address()}:${port}`))
   .on("error", (err: any) => process.env.NODE_ENV || console.log(err));
 
 export default app;
