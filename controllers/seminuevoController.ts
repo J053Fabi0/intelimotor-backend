@@ -5,6 +5,7 @@ import handleError from "../utils/handleError";
 import { screenshotsDir } from "../utils/constants";
 import CommonResponse from "../types/commonResponse.type";
 import PostSeminuevo from "../types/api/seminuevo/postSeminuevo.type";
+import isRoot from "../utils/isRoot";
 
 async function login(page: Page) {
   await page.goto("https://www.seminuevos.com/login");
@@ -144,7 +145,7 @@ async function photographLatestPublication(page: Page) {
 
 export const postSeminuevo = async ({ body: { price, description } }: PostSeminuevo, res: CommonResponse) => {
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true, args: isRoot() ? ["--no-sandbox"] : undefined });
 
     const page = await browser.newPage();
     page.setViewport({ width: 1300, height: 2000 });
