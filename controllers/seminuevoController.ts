@@ -38,7 +38,7 @@ async function sellCar(page: Page, price: number, description: string) {
     };
 
     while (true) {
-      if (n >= 300) throw new Error();
+      if (n >= 100) throw new Error();
 
       try {
         await page.click(selector);
