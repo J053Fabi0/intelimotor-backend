@@ -152,25 +152,27 @@ export const postSeminuevo = async ({ body: { price, description } }: PostSeminu
     const browser = await puppeteer.launch({ headless: true, args: isRoot() ? ["--no-sandbox"] : undefined });
 
     const page = await browser.newPage();
-    page.setDefaultTimeout(10 * 1_000); // Un timeout de 10 segundos en todo.
+    page.setDefaultTimeout(15 * 1_000); // Un timeout de 15 segundos en todo.
     page.setViewport({ width: 1300, height: 2000 });
+
+    const maxTries = 4;
 
     // Login
     console.log("Haciendo login");
-    await repeatUntilNoError(...([() => login(page), 3, 0] as const), (e, i) =>
+    await repeatUntilNoError(...([() => login(page), maxTries, 0] as const), (e, i) =>
       console.log(`Error en login en el intento #${i}:`, e)
     );
 
     // Publicar carro
     console.log("Publicando carro");
-    await repeatUntilNoError(...([() => sellCar(page, price, description), 3, 0] as const), (e, i) =>
+    await repeatUntilNoError(...([() => sellCar(page, price, description), maxTries, 0] as const), (e, i) =>
       console.log(`Error en sellCar en el intento #${i}:`, e)
     );
 
     // Tomar captura de pantalla
     console.log("Tomando captura de pantalla");
     const { ssName, productID } = await repeatUntilNoError(
-      ...([() => photographLatestPublication(page), 3, 0] as const),
+      ...([() => photographLatestPublication(page), maxTries, 0] as const),
       (e, i) => console.log(`Error en photographLatestPublication en el intento #${i}:`, e)
     );
 
