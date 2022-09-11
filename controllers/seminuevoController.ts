@@ -6,6 +6,7 @@ import { screenshotsDir } from "../utils/constants";
 import CommonResponse from "../types/commonResponse.type";
 import PostSeminuevo from "../types/api/seminuevo/postSeminuevo.type";
 import isRoot from "../utils/isRoot";
+import repeatUntilNoError from "../utils/repeatUntilNoError";
 
 async function login(page: Page) {
   await page.goto("https://www.seminuevos.com/login");
@@ -150,9 +151,16 @@ export const postSeminuevo = async ({ body: { price, description } }: PostSeminu
     const page = await browser.newPage();
     page.setViewport({ width: 1300, height: 2000 });
 
-    await login(page);
-    await sellCar(page, price, description);
-    const { ssName, productID } = await photographLatestPublication(page);
+    await repeatUntilNoError(...([() => login(page), 3, 0] as const), (e, i) =>
+      console.log(`Error en login en el intento #${i}:`, e)
+    );
+    await repeatUntilNoError(...([() => sellCar(page, price, description), 3, 0] as const), (e, i) =>
+      console.log(`Error en sellCar en el intento #${i}:`, e)
+    );
+    const { ssName, productID } = await repeatUntilNoError(
+      ...([() => photographLatestPublication(page), 3, 0] as const),
+      (e, i) => console.log(`Error en photographLatestPublication en el intento #${i}:`, e)
+    );
 
     await browser.close();
     res
