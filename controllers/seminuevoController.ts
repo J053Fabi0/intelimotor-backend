@@ -34,7 +34,7 @@ async function sellCar(page: Page, price: number, description: string) {
   }) {
     let n = 0;
     const reportarFalla = async (paso: string) => {
-      console.log(`Intento #${++n} fallido. Paso: ${paso}. DropdownID: ${dropdownID}. Selector: "${selector}\n`);
+      // console.log(`Intento #${++n} fallido. Paso: ${paso}. DropdownID: ${dropdownID}. Selector: "${selector}\n`);
       await sleep(false ? 99999 : 10);
     };
 
